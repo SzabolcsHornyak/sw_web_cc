@@ -25,7 +25,6 @@ def root_page():
     act_page = request.args.get('page')
     if act_page is None:
         act_page = '1'
-    print('PAGE: ' + act_page)
 
     response = requests.get('http://swapi.co/api/planets/?page=' + act_page).json()
     planets = response['results']
@@ -47,7 +46,7 @@ def root_page():
         planets[i]['diameter'] = format_thousands(planets[i]['diameter'], ' km')
         planets[i]['surface_water'] = format_thousands(planets[i]['surface_water'], '%')
         planets[i]['population'] = format_thousands(planets[i]['population'], ' people')
-    return render_template('index.html', planets=planets, but_next=but_next, but_prev=but_prev)
+    return render_template('index.html', planets=planets, but_next=but_next, but_prev=but_prev, act_page=act_page)
 
 
 def main():
