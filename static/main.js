@@ -8,13 +8,16 @@ $('.btn').on('click', function(){
 $(".myBtn").on('click', function(){
     var bdata = $.parseJSON($(this).attr('data-button'));
     $('.modal_header').text('Residents of ' + bdata['planet']);
-
+    $('#myModal').css("display", "block");
+    $('.modal_table').empty();
+    $('.modal_table').append("<center>Loading please wait...<br><img src='/static/loading.gif' width='100' height='100'>");
+            
     $.ajax({
         type: 'GET',
         url: "http://swapi.co/api/planets/?page=" + bdata['page'],
         data: { get_param: 'value' },
         dataType: 'json',
-        success: function (data) { 
+        success: function (data) {         
             var residents = data['results'][bdata['p_index']]['residents'];
             var content = "<table class='table table-hover'><thead>"
             content += "<tr><th>Name</th><th>height (in meters)</th><th>mass (in kg)</th>"
@@ -30,7 +33,7 @@ $(".myBtn").on('click', function(){
                     async: false,
                     success: function (data) {
                         content += "<td>" + data['name'] + "</td>";
-                        content += "<td>" + data['height'] + "</td>";
+                        content += "<td>" + (parseInt(data['height'])/100).toFixed(2) + "</td>";
                         content += "<td>" + data['mass'] + "</td>";
                         content += "<td>" + data['skin_color'] + "</td>";
                         content += "<td>" + data['hair_color'] + "</td>";
@@ -44,7 +47,7 @@ $(".myBtn").on('click', function(){
             content += "</tbody></table>";
             $('.modal_table').empty();
             $('.modal_table').append(content);
-            $('#myModal').css("display", "block");
+            
         }    
     });
 });
