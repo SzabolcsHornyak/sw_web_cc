@@ -19,15 +19,22 @@
             <ul class="nav navbar-nav">
                 <li><a href="#">Planet lists</a></li>
                 <li><a href="#">Voting Statistic</a></li>
-                <li><a href="#">Registration</a></li>
-                <li><a href="#">Login</a></li>
-                <li><a href="#">Logout</a></li>
+                {% if logged_user!='' %}
+                <li><a href="#"><div id = "logout_button">Logout</div></a></li>
+                {% else %}
+                <li><a href="#"><div id = "reg_button">Registration</div></a></li>
+                <li><a href="#"><div id = "login_button">Login</div></a></li>
+                {% endif %}
+
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <p class="navbar-text">Signed infos</p>
+                {% if logged_user!='' %}
+                <p class="navbar-text">{{ logged_user }} signed in</p>
+                {% endif %}
             </ul>
         </div>
     </nav>
+    
     <div class="container">
         <h1>Star Wars Universe Planet</h1>
         <div class="buttons">
@@ -68,16 +75,41 @@
         {% endfor %}
         </tbody>
     </div> 
+    
+    <div id="Signup_Modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Sign Up</h3>
+            <form action="/signup" method="post">
+            <label><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" required>
+            <label><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
+            <br><center><button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="Login_Modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Login</h3>
+            <form action="/login" method="post">
+            <label><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" required>
+            <label><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
+            <br><center><button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
 
     <div id="myModal" class="modal">
-
         <!-- Modal content -->
         <div class="modal-content">
         <span class="close">&times;</span>
         <h3 class="modal_header">no data</h3>
-        <div class="modal_table">
-        </div>
-        </p>
+        <div class="modal_table"></div>
     </div>
 
 </div>

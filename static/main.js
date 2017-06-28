@@ -1,9 +1,24 @@
+$('#reg_button').on('click', function(){
+   $('#Signup_Modal').css("display", "block");
+});
+
+$('#logout_button').on('click', function(){
+   window.location.replace('/logout');
+});
+
+
+$('#login_button').on('click', function(){
+   $('#Login_Modal').css("display", "block");
+});
+
+
 $('.btn').on('click', function(){
     var bdata = $(this).attr('data-button');
     if (bdata != 'None'){
         window.location.replace('/?page='+$(this).attr('data-button'));
     }
 });
+
 
 $(".myBtn").on('click', function(){
     var bdata = $.parseJSON($(this).attr('data-button'));
@@ -52,36 +67,7 @@ $(".myBtn").on('click', function(){
     });
 });
 
-// Get the modal
-var modal = document.getElementById('myModal');
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-
-/*
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}*/
+$(".close").on('click', function(){
+        $('.modal').css("display", "none");
+});

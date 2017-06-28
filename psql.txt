@@ -1,0 +1,13 @@
+CREATE TABLE users (
+    id serial primary key,
+    username VARCHAR(255),
+    password VARCHAR(255)
+);
+
+CREATE TABLE planet_votes(
+    id serial primary key,
+    planet_id int,
+    planet_name varchar(255),
+    user_id integer REFERENCES users(id),
+    submission_time timestamp default NULL
+);
