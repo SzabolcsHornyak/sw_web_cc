@@ -18,7 +18,7 @@
             </div>
             <ul class="nav navbar-nav">
                 <li><a href="#">Planet lists</a></li>
-                <li><a href="#">Voting Statistic</a></li>
+                <li><a href="#"><div id = "voting_stat_button">Voting Statistic</div></a></li>
                 {% if logged_user!='' %}
                 <li><a href="#"><div id = "logout_button">Logout</div></a></li>
                 {% else %}
@@ -70,7 +70,11 @@
                 No known residents
                 {% endif %}
             </td>
-            <td>Votes</td>            
+            <td>
+                {% if logged_user!='' %}
+                <button class="vote_button" data-button='{ "Planet": "{{ planet['name'] }}", "P_id": {{ planet['url'] }} }'>Vote</button>
+                {% endif %}
+            </td>            
         </tr>
         {% endfor %}
         </tbody>

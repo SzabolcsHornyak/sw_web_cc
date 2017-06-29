@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, session, escape
+from flask import Flask, render_template, request, redirect, url_for, session, escape, jsonify
 import requests
+from datetime import datetime
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from db_handling import execute_sql_statement
@@ -56,6 +57,33 @@ def login():
     return redirect(url_for('root_page'))
 
 
+@app.route('/vote_stats')
+def vote_stats():
+    stat = execute_sql_statement("SELECT count(*), planet_name FROM planet_votes group by planet_name")
+    vote_json = []
+    for i in range(len(stat)):
+        temp_tupl = {}
+        temp_tupl['count'] = stat[i][0]
+        temp_tupl['planet'] = stat[i][1]
+        vote_json.append(temp_tupl)
+    return json.dumps(vote_json)
+
+
+@app.route('/vote', methods=['GET', 'POST'])
+def vote_page():
+    vote_datas = json.loads(request.form['myData'])
+    Planet_id = vote_datas['P_id']
+    Planet_name = vote_datas['Planet']
+    sub_time = datetime.now()
+    User_id = execute_sql_statement("SELECT id FROM users where username='" + session['username'] + "'")[0][0]
+    have_vote = execute_sql_statement("SELECT count(*) FROM planet_votes where planet_name='" + Planet_name + "' and user_id=" + str(User_id))[0][0]
+    if (have_vote > 0):
+        print('Have vote for this planet')
+    else:
+        execute_sql_statement("""INSERT INTO planet_votes (planet_id, planet_name, user_id, submission_time) VALUES (%s, %s, %s, %s)""", (Planet_id, Planet_name, User_id, sub_time.replace(microsecond=0)))
+    return redirect(url_for('root_page'))
+
+
 @app.route('/signup', methods=['POST'])
 def signup():
     if request.method == 'POST':
@@ -75,7 +103,6 @@ def signup():
 
 @app.route('/', methods=['POST', 'GET'])
 def root_page():
-    
     # check user logged in
     logged_user = ''
     if session.get('username'):
@@ -105,6 +132,7 @@ def root_page():
         planets[i]['diameter'] = format_thousands(planets[i]['diameter'], ' km')
         planets[i]['surface_water'] = format_thousands(planets[i]['surface_water'], '%')
         planets[i]['population'] = format_thousands(planets[i]['population'], ' people')
+        planets[i]['url'] = planets[i]['url'].split('/')[5]
     return render_template('index.html', planets=planets, but_next=but_next, but_prev=but_prev, act_page=act_page, logged_user=logged_user)
 
 

@@ -2,6 +2,7 @@ $('#reg_button').on('click', function(){
    $('#Signup_Modal').css("display", "block");
 });
 
+
 $('#logout_button').on('click', function(){
    window.location.replace('/logout');
 });
@@ -20,6 +21,32 @@ $('.btn').on('click', function(){
 });
 
 
+$("#voting_stat_button").on('click', function(){
+    $('.modal_header').text('Voting Statistics');
+    $.ajax({
+        type: 'GET',
+        url: "/vote_stats",
+        data: { get_param: 'value' },
+        dataType: 'json',
+        success: function (data) {         
+            // table header structure
+            var content = "<table class='table table-hover'><thead>";
+            content += "<tr><th>Votes</th><th>Planet</th></thead><tbody>";
+            for(i=0; i < data.length; i++){
+                content +="<tr>";
+                content += "<td>" + JSON.stringify(data[i]['count']) + "</td>";
+                content += "<td>" + JSON.stringify(data[i]['planet']).replace(/\"/g, "") + "</td>";
+                content +="</tr>";
+            }    
+            content += "</tbody></table>";
+            $('.modal_table').empty();
+            $('.modal_table').append(content);
+            $('#myModal').css("display", "block");
+        }
+    })
+});
+
+
 $(".myBtn").on('click', function(){
     var bdata = $.parseJSON($(this).attr('data-button'));
     $('.modal_header').text('Residents of ' + bdata['planet']);
@@ -34,12 +61,14 @@ $(".myBtn").on('click', function(){
         dataType: 'json',
         success: function (data) {         
             var residents = data['results'][bdata['p_index']]['residents'];
+            // table header structure
             var content = "<table class='table table-hover'><thead>"
             content += "<tr><th>Name</th><th>height (in meters)</th><th>mass (in kg)</th>"
             content += "<th>skin color</th><th>hair color</th><th>eye color</th>"
             content += "<th>birth year</th><th>gender</tr></thead><tbody>";
             for(i=0; i < residents.length; i++){
                 content +="<tr>";
+                // ask residents one by one
                 $.ajax({
                     type: 'GET',
                     url: residents[i],
@@ -71,3 +100,19 @@ $(".myBtn").on('click', function(){
 $(".close").on('click', function(){
         $('.modal').css("display", "none");
 });
+
+
+$(".vote_button").on('click', function(){
+    var bdata = $(this).attr('data-button');
+    $.post("/vote", {"myData": bdata});
+    alert('Voted to ' + $.parseJSON(bdata)['Planet']);
+    // WHY NOT WORK?
+    /*$.ajax({
+        url: '/vote', 
+        type: 'POST',
+        dataType: 'json',
+        data: {"myData": bdata}, 
+        success: function(response) {
+                console.log(response);
+            }})*/
+});   
