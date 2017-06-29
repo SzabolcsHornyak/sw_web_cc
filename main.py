@@ -96,8 +96,10 @@ def signup():
                 return redirect(url_for('bad'))
             else:
                 execute_sql_statement("""INSERT INTO users (username, password) VALUES (%s, %s)""", (u_name, hash_pw))
+                user_login(u_name, u_pass)
         else:
             execute_sql_statement("""INSERT INTO users (username, password) VALUES (%s, %s)""", (u_name, hash_pw))
+            user_login(u_name, u_pass)
     return redirect(url_for('root_page'))
 
 
